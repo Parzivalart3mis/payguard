@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="PayGuard">
+  <!-- Navy tile (full background so it survives the maskable circle crop) -->
+  <rect width="96" height="96" rx="20" fill="#1E3A5F"/>
+  <!-- Teal shield, ~60% of tile height, kept within the central safe zone -->
+  <path d="M48 14 L76 22 V48 C76 64 64 76 48 82 C32 76 20 64 20 48 V22 Z" fill="#0F766E"/>
+  <!-- Bold white checkmark, round caps/joins -->
+  <path d="M34 49 L44 59 L63 37" fill="none" stroke="#FFFFFF" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+/* Class-based dark mode — toggled by the inline theme script on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Regulatory-navy palette. @theme emits each token as a CSS variable on :root,
+ * so utilities like `bg-primary` / `text-text-muted` resolve to var(--color-*).
+ * The .dark block below overrides the same variables for dark mode.
+ */
+@theme {
+  --color-primary: #1e3a5f;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #475569;
+  --color-accent: #0f766e;
+  --color-accent-foreground: #ffffff;
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-text: #0f172a;
+  --color-text-muted: #64748b;
+  --color-success: #15803d;
+  --color-warning: #b45309;
+  --color-error: #b91c1c;
+  --color-border: #e2e8f0;
+
+  --radius-DEFAULT: 8px;
+  --radius-card: 12px;
+
+  --font-sans:
+    var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --text-xs: 0.875rem; /* 14px */
+  --text-sm: 1rem; /* 16px — minimum body size */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.375rem; /* 22px */
+  --text-2xl: 1.75rem; /* 28px */
+}
+
+.dark {
+  --color-primary: #1e3a5f;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #94a3b8;
+  --color-accent: #2dd4bf;
+  --color-accent-foreground: #042f2a;
+  --color-background: #0b1220;
+  --color-surface: #111a2b;
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+  --color-border: #1e293b;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: 16px; /* mandatory >= 16px base — prevents iOS focus zoom */
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
+  }
+
+  /* Kill the 300ms double-tap zoom delay on anything tappable. */
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  [role="tab"] {
+    touch-action: manipulation;
+  }
+
+  /*
+   * iOS auto-zooms when a focused control has font-size < 16px regardless of
+   * the viewport meta — so force >= 16px on every form control.
+   */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  /* UI chrome only — never apply to body text or draft content. */
+  .select-none-ui {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* iPhone safe areas (requires viewportFit: 'cover'). */
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .h-safe-top {
+    height: env(safe-area-inset-top);
+  }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
