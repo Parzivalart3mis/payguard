@@ -23,8 +23,8 @@
     "prepare": "husky || true"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.102.0",
     "@clerk/nextjs": "^7.4.3",
+    "@google/genai": "^2.11.0",
     "@neondatabase/serverless": "^1.1.0",
     "@paralleldrive/cuid2": "^3.3.0",
     "@upstash/ratelimit": "^2.0.8",
@@ -45,14 +45,14 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@electric-sql/pglite": "^0.5.1",
+    "@eslint/eslintrc": "^3",
     "@playwright/test": "^1.50.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@vitest/coverage-v8": "^4.1.8",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^4.1.8",
     "dotenv": "^16.4.7",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9",

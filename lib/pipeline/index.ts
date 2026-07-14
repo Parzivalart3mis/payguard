@@ -48,7 +48,7 @@ export async function ingestDocumentChunks(
 }
 
 /**
- * Step 1–2 setup: extract obligations (Haiku), persist the analysis, and ingest
+ * Step 1–2 setup: extract obligations (Flash), persist the analysis, and ingest
  * document chunks for retrieval. Advances status uploaded → analyzing → analyzed.
  */
 export async function analyzeDocument(
@@ -77,8 +77,8 @@ export interface GenerateDraftOptions {
 }
 
 /**
- * Steps 2–4: retrieve grounded context per obligation, draft (Sonnet + web
- * search), persist the draft, then run the faithfulness self-check and persist
+ * Steps 2–4: retrieve grounded context per obligation, draft (Pro + Google
+ * Search grounding), persist the draft, then run the faithfulness self-check and persist
  * the verdict. Advances status analyzed → drafting → drafted.
  */
 export async function generateDraftForDocument(

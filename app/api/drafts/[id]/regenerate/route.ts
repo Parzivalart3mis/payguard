@@ -4,7 +4,6 @@ import { requireUser, toPrincipal } from "@/lib/auth/current-user";
 import { extractCitations } from "@/lib/ai/parse";
 import { streamDraft } from "@/lib/ai/draft";
 import { runSelfCheck } from "@/lib/ai/selfcheck";
-import { textFromContent } from "@/lib/ai/util";
 import { ApiError, withErrorHandling } from "@/lib/http";
 import { enforceRateLimit } from "@/lib/ratelimit";
 import { getVectorStore, retrieveForObligations } from "@/lib/retrieval";
@@ -84,9 +83,14 @@ export const POST = withErrorHandling(async (req: Request, ctx: Ctx) => {
         );
       };
       try {
-        stream.on("text", (delta: string) => send("token", { text: delta }));
-        const final = await stream.finalMessage();
-        const content = textFromContent(final.content).trim();
+        let content = "";
+        for await (const delta of stream) {
+          if (delta) {
+            content += delta;
+            send("token", { text: delta });
+          }
+        }
+        content = content.trim();
         const citations = extractCitations(content, validChunkIds);
 
         const version = await getNextVersion(db, document.id);

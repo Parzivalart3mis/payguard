@@ -11,7 +11,7 @@ const isProd = process.env.NODE_ENV === "production";
  *  - Vercel Blob (private uploads served via signed URLs)
  *  - Upstash REST endpoints (in case any client telemetry is used)
  *
- * Anthropic, Neon, Upstash Vector/Redis writes all happen server-side only, so
+ * Gemini, Neon, Upstash Vector/Redis writes all happen server-side only, so
  * they are intentionally absent from the browser policy.
  *
  * `'unsafe-inline'` is required for Next.js' hydration bootstrap and Clerk's

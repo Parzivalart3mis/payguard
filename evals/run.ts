@@ -58,12 +58,12 @@ async function measureRetrieval(store: FakeVectorStore): Promise<{
 
 /**
  * Optional LLM-as-judge faithfulness score over generated drafts. Only runs
- * with RUN_FAITHFULNESS=1 and a configured ANTHROPIC_API_KEY (it costs money).
+ * with RUN_FAITHFULNESS=1 and a configured GEMINI_API_KEY (it costs money).
  */
 async function measureFaithfulness(
   store: FakeVectorStore,
 ): Promise<number | null> {
-  if (process.env.RUN_FAITHFULNESS !== "1" || !process.env.ANTHROPIC_API_KEY) {
+  if (process.env.RUN_FAITHFULNESS !== "1" || !process.env.GEMINI_API_KEY) {
     return null;
   }
   const { draftCompletion } = await import("@/lib/ai/draft");

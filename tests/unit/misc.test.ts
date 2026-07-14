@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { docNamespace } from "@/lib/constants";
 import { cn, formatDate } from "@/lib/utils";
-import { firstJsonText, textFromContent } from "@/lib/ai/util";
+import { firstJsonText } from "@/lib/ai/util";
 import {
   buildDraftUser,
   buildExtractUser,
@@ -24,28 +24,20 @@ describe("constants & utils", () => {
 });
 
 describe("ai/util", () => {
-  it("textFromContent concatenates text blocks only", () => {
-    const content = [
-      { type: "text", text: "Hello " },
-      { type: "tool_use", id: "t", name: "x", input: {} },
-      { type: "text", text: "world" },
-    ] as never;
-    expect(textFromContent(content)).toBe("Hello world");
-  });
-
   it("firstJsonText parses clean JSON", () => {
-    const content = [{ type: "text", text: '{"a":1}' }] as never;
-    expect(firstJsonText(content)).toEqual({ a: 1 });
+    expect(firstJsonText('{"a":1}')).toEqual({ a: 1 });
   });
 
   it("firstJsonText recovers JSON embedded in noise", () => {
-    const content = [{ type: "text", text: 'noise {"a":2} tail' }] as never;
-    expect(firstJsonText(content)).toEqual({ a: 2 });
+    expect(firstJsonText('noise {"a":2} tail')).toEqual({ a: 2 });
   });
 
   it("firstJsonText returns {} for unparseable text", () => {
-    const content = [{ type: "text", text: "not json" }] as never;
-    expect(firstJsonText(content)).toEqual({});
+    expect(firstJsonText("not json")).toEqual({});
+  });
+
+  it("firstJsonText returns {} for empty text", () => {
+    expect(firstJsonText("")).toEqual({});
   });
 });
 

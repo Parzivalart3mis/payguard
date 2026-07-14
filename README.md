@@ -19,7 +19,7 @@ flowchart TD
     A[iPhone PWA - standalone] --> B[Next.js on Vercel - route handlers]
     B --> C[Clerk auth + roles]
     B --> D[Vercel Workflow: extract -> retrieve -> draft -> self-check]
-    D --> E[Anthropic: Haiku + Sonnet + web search]
+    D --> E[Gemini: Flash + Pro + Google Search grounding]
     D --> F[Upstash Vector - corpus + doc namespaces, hybrid]
     B --> G[(Neon Postgres - documents/drafts/reviews)]
     B --> H[Vercel Blob - uploaded PDFs]
@@ -28,15 +28,15 @@ flowchart TD
 
 ### The AI pipeline
 
-1. **Extract** (Haiku) — chunk the document and extract obligations/clauses as
+1. **Extract** (Flash) — chunk the document and extract obligations/clauses as
    structured JSON (`{id, text, category, sourceSpan}`); persisted as an analysis.
 2. **Retrieve** — for each obligation, hybrid (dense + sparse) search across the
    shared `corpus` namespace **and** the document's `doc:{id}` namespace, fused
    across namespaces with RRF, assembled into a citation-tagged context block.
-3. **Draft** (Sonnet) — compliance language grounded in the retrieved context
-   with inline `[chunkId]` citations. The Anthropic **web search** tool is enabled
+3. **Draft** (Pro) — compliance language grounded in the retrieved context
+   with inline `[chunkId]` citations. Gemini's **Google Search grounding** is enabled
    for time-sensitive regulatory detail; document-specific claims cite context.
-4. **Self-check** (Sonnet, LLM-as-judge) — does every claim trace to cited
+4. **Self-check** (Pro, LLM-as-judge) — does every claim trace to cited
    context? Produces `{verdict, flags}` persisted on the draft. A "needs
    attention" banner surfaces flags before the author can submit.
 
@@ -58,8 +58,8 @@ After step 4 the author reviews, then submits to a reviewer (`in_review`). On
 Next.js 15 (App Router) · React 19 · TypeScript (strict, `noUncheckedIndexedAccess`,
 `exactOptionalPropertyTypes`) · Tailwind CSS v4 + shadcn-style UI + lucide-react ·
 Framer Motion · Neon serverless Postgres + Drizzle ORM · Upstash Vector (hybrid) ·
-Upstash Redis + `@upstash/ratelimit` · Clerk · `@anthropic-ai/sdk` (Haiku +
-Sonnet + web search) · Vercel Blob · Vitest + PGlite + Playwright.
+Upstash Redis + `@upstash/ratelimit` · Clerk · `@google/genai` (Gemini Flash +
+Pro + Google Search grounding) · Vercel Blob · Vitest + PGlite + Playwright.
 
 ## Setup
 
@@ -86,7 +86,7 @@ pnpm dev                          # http://localhost:3000
 | `UPSTASH_VECTOR_REST_TOKEN`         | Upstash Vector token                           |
 | `UPSTASH_REDIS_REST_URL`            | Upstash Redis URL (rate limiting)              |
 | `UPSTASH_REDIS_REST_TOKEN`          | Upstash Redis token                            |
-| `ANTHROPIC_API_KEY`                 | Anthropic API key (server-side only)           |
+| `GEMINI_API_KEY`                    | Google Gemini API key (server-side only)       |
 | `BLOB_READ_WRITE_TOKEN`             | Vercel Blob token for private uploads          |
 
 > **Upstash Vector** must be created as a **hybrid index** using Upstash-hosted
@@ -147,7 +147,7 @@ On **Android Chrome** the app shows an install prompt and launches standalone.
   extracted server-side with a maintained library — untrusted content is never
   executed.
 - **Headers:** HSTS, a strict Content-Security-Policy (self + Clerk + Vercel Blob
-  - Upstash REST; Anthropic is server-side only), `X-Content-Type-Options: nosniff`,
+  - Upstash REST; Gemini is server-side only), `X-Content-Type-Options: nosniff`,
     Referrer-Policy, Permissions-Policy.
 - **Rate limiting:** all mutating + AI routes via Upstash Redis. No PII in logs.
   There is no external-image fetching, so no image proxy / SSRF guard is needed.
@@ -184,6 +184,6 @@ decision/audit trail (no separate audit log was in scope).
 - **Vercel** hosts the app. Connect **Neon** (dev branch for local, a branch per
   preview via the Vercel↔Neon integration, prod branch for production) and run
   `drizzle-kit migrate` as a build step. Add **Upstash Vector + Redis**, **Clerk**,
-  **Anthropic**, and **Vercel Blob** integrations/keys. Point the Clerk webhook at
+  **Google Gemini**, and **Vercel Blob** integrations/keys. Point the Clerk webhook at
   `/api/webhooks/clerk`. Seed the corpus once per environment (`pnpm db:seed`).
 - **CI** (GitHub Actions) runs typecheck, lint, test, evals, and build on every PR.

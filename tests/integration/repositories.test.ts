@@ -73,7 +73,7 @@ describe("repositories", () => {
           sourceSpan: "fees",
         },
       ],
-      model: "claude-haiku-4-5",
+      model: "gemini-2.5-flash",
     });
 
     expect(await getNextVersion(db, doc.id)).toBe(1);

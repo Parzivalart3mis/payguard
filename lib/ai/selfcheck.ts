@@ -1,29 +1,29 @@
+import { Type, type Schema } from "@google/genai";
 import { MODELS } from "@/lib/constants";
 import type { Faithfulness } from "@/lib/types";
-import { getAnthropic } from "./client";
+import { getGemini } from "./client";
 import { parseFaithfulness } from "./parse";
 import { buildJudgeUser, JUDGE_SYSTEM } from "./prompts";
 import { firstJsonText } from "./util";
 
-const FAITHFULNESS_SCHEMA: Record<string, unknown> = {
-  type: "object",
+const FAITHFULNESS_SCHEMA: Schema = {
+  type: Type.OBJECT,
   properties: {
-    verdict: { type: "string", enum: ["pass", "flagged"] },
+    verdict: { type: Type.STRING, enum: ["pass", "flagged"] },
     flags: {
-      type: "array",
+      type: Type.ARRAY,
       items: {
-        type: "object",
+        type: Type.OBJECT,
         properties: {
-          claim: { type: "string" },
-          reason: { type: "string" },
+          claim: { type: Type.STRING },
+          reason: { type: Type.STRING },
         },
         required: ["claim", "reason"],
-        additionalProperties: false,
+        propertyOrdering: ["claim", "reason"],
       },
     },
   },
   required: ["verdict", "flags"],
-  additionalProperties: false,
 };
 
 /**
@@ -34,14 +34,15 @@ export async function runSelfCheck(input: {
   draft: string;
   contextText: string;
 }): Promise<Faithfulness> {
-  const res = await getAnthropic().messages.create({
+  const res = await getGemini().models.generateContent({
     model: MODELS.judge,
-    max_tokens: 4000,
-    system: JUDGE_SYSTEM,
-    messages: [{ role: "user", content: buildJudgeUser(input) }],
-    output_config: {
-      format: { type: "json_schema", schema: FAITHFULNESS_SCHEMA },
+    contents: buildJudgeUser(input),
+    config: {
+      systemInstruction: JUDGE_SYSTEM,
+      maxOutputTokens: 4000,
+      responseMimeType: "application/json",
+      responseSchema: FAITHFULNESS_SCHEMA,
     },
   });
-  return parseFaithfulness(firstJsonText(res.content));
+  return parseFaithfulness(firstJsonText(res.text ?? ""));
 }

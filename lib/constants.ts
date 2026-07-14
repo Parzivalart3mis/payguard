@@ -1,12 +1,14 @@
 /**
- * Anthropic model IDs (current Haiku + Sonnet, per docs.claude.com).
- * Haiku handles the cheap, high-volume extraction pass; Sonnet does the
- * reasoning-heavy drafting and faithfulness self-check.
+ * Google Gemini model IDs (per ai.google.dev).
+ * Flash across the board keeps the app working on the free tier (Pro models
+ * are billing-only: free-tier quota is 0). With billing enabled, bump `draft`
+ * and `judge` to `gemini-pro-latest` for stronger reasoning on the
+ * drafting and faithfulness self-check passes.
  */
 export const MODELS = {
-  extract: "claude-haiku-4-5",
-  draft: "claude-sonnet-4-6",
-  judge: "claude-sonnet-4-6",
+  extract: "gemini-3.5-flash",
+  draft: "gemini-3.5-flash",
+  judge: "gemini-3.5-flash",
 } as const;
 
 /** Field-length caps enforced by Zod at every API boundary (sensitive tier). */
